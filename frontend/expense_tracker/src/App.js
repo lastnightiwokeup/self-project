@@ -5,7 +5,9 @@ import NavBar from "../src/component/base/NavBar/NavBar";
 import { Routes, Route } from "react-router-dom";
 // import PageRouter from "./pages/PageRouters";
 import HomePage from "./pages/HomePage";
-import LoginDialog from "./component/base/LoginDialog/LoginDialog"
+import LoginDialog from "./component/base/LoginDialog/LoginDialog";
+import AddRecord from "./pages/AddRecord";
+import Chart from './pages/Chart'
 
 function App() {
   const [data, setData] = useState(null);
@@ -21,7 +23,7 @@ function App() {
       <NavBar />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="button" element={<LoginDialog />} />
+        <Route path="chart" element={<Chart />} />
       </Routes>
     </>
   );

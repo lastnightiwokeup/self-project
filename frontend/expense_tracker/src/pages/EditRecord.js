@@ -29,7 +29,7 @@ export default function FormDialog() {
   return (
     <React.Fragment>
       <Button variant="outlined" onClick={handleClickOpen}>
-        Add
+        Edit
       </Button>
       <Dialog
         open={open}
