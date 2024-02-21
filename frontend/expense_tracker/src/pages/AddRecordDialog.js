@@ -27,10 +27,10 @@ export default function FormDialog() {
   };
 
   return (
-    <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Add
-      </Button>
+    // <React.Fragment>
+    //   <Button variant="outlined" onClick={handleClickOpen}>
+    //     Add
+    //   </Button>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -89,6 +89,5 @@ export default function FormDialog() {
           <Button type="submit">Add</Button>
         </DialogActions>
       </Dialog>
-    </React.Fragment>
   );
 }

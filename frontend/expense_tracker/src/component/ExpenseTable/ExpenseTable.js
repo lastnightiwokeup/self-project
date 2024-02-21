@@ -1,53 +1,52 @@
 import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddRecord from "../../pages/AddRecord";
+import AddRecordDialog from "../../pages/AddRecordDialog";
 import { DataGrid } from "@mui/x-data-grid";
 import Grid from "@mui/material/Grid";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 const columns = [
-  { field: "id", headerName: "ID", width: 90 },
+  { field: "id", headerName: "ID", width: 150 },
   {
-    field: "firstName",
+    field: "itemName",
     headerName: "Item Name",
-    width: 200,
-    editable: true,
-  },
-  {
-    field: "lastName",
-    headerName: "Amout",
     width: 150,
     editable: true,
   },
   {
-    field: "age",
-    headerName: "Date",
+    field: "amount",
+    headerName: "Amount",
+    width: 100,
     type: "number",
-    width: 110,
     editable: true,
   },
   {
-    field: "fullName",
+    field: "date",
+    headerName: "Date",
+    width: 150,
+    editable: true,
+  },
+  {
+    field: "category",
     headerName: "Category",
     description: "This column has a value getter and is not sortable.",
     sortable: false,
     width: 160,
-    valueGetter: (params) =>
-      `${params.row.firstName || ""} ${params.row.lastName || ""}`,
   },
   {
     field: "",
     headerName: "",
     description: "",
     sortable: false,
-    width: 180,
+    width: 220,
     renderCell: (params) => {
       return (
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Button
-            variant="primary"
+            variant="contained"
             // onClick={() => {
             //   setvCardRecordToModify(params.row);
             //   setBusinessCardRecordToModify(params.row.businessCards);
@@ -57,7 +56,7 @@ const columns = [
             Edit
           </Button>
           <Button
-            variant="danger"
+            variant="contained"
             // onClick={() => {
             //   setvCardRecordToModify(params.row);
             //   setBusinessCardRecordToModify(params.row.businessCards);
@@ -73,66 +72,67 @@ const columns = [
 ];
 
 const rows = [
-  { id: 1, lastName: "Snow", firstName: "Jon", age: 14 },
-  { id: 2, lastName: "Lannister", firstName: "Cersei", age: 31 },
-  { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
-  { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
-  { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-  { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-  { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-  { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-  { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
+  { id: 1, itemName: "Coffee", amount: 12, date: "2024/2/2", category: "Drink" },
+  { id: 2, itemName: "Clothes", amount: 46 , date: "2024/2/2", category: "Food" },
+  { id: 3, itemName: "Toys", amount: 100, date: "2024/2/2", category: "Food" },
+  { id: 4, itemName: "Phone", amount: 25, date: "2024/2/2", category: "Food" },
+  { id: 5, itemName: "Pill", amount: 27, date: "2024/2/2", category: "Food" },
+  { id: 6, itemName: "Fee", amount: 500, date: "2024/2/2", category: "Food" },
 ];
 
 export default function DataGridDemo(props) {
   return (
-    <Box sx={{ height: 500, width: "80%" }}>
-      <AddRecord />
-      <Grid item md={6} sm={6} xs={12} style={{ paddingLeft: 0 }}>
-        <TextField
-          id="fullName"
-          label="Search"
-          variant="outlined"
-          name="fullName"
-          // onChange={(e) => {
-          //   handleSearchInput(e);
-          // }}
+    <Box sx={{ height: 500, width: "60%", margin: "0 auto" }}>
+      <Grid
+        container
+        alignItems="center"
+        justifyContent="space-between"
+        spacing={1}
+        sx={{ mb: 2, mt: 2 }}
+      >
+        <Grid item md={4} sm={6} xs={12} sx={{ display: "flex" }}>
+          <Grid item>
+            <Button variant="contained">Add</Button>
+          </Grid>
+          <Grid item sx={{ ml: 1 }}>
+            <Button variant="contained">Export CSV</Button>
+          </Grid>
+        </Grid>
 
-          // value={searchInput.fullName}
-          // InputLabelProps={{
-          //   shrink: searchInput.fullName !== "",
-          // }}
-        />
-      </Grid>
-      <Grid item md={6} sm={6} xs={12} style={{ paddingLeft: 0 }}>
-        <Button
-          // style={{
-          //   marginLeft: isMobile ? 0 : 15,
-          // }}
-          
-          variant="secondary"
-          // onClick={(e) => {
-          //   submitSearch();
-          //   clearInput();
-          // }}
+        <Grid
+          item
+          md={4}
+          sm={6}
+          xs={12}
+          sx={{ display: "flex", justifyContent: "space-between" }}
         >
-          Search
-        </Button>
+          <TextField
+            id="fullName"
+            label="Search"
+            variant="outlined"
+            name="fullName"
+          />
+          <Grid sx={{ mt: 1, ml: 2 }}>
+            <Button variant="contained">Search</Button>
+          </Grid>
+        </Grid>
       </Grid>
       <Box mb={2}>
-        <Grid item md={6} sm={6} xs={12} style={{ paddingLeft: 0 }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
+        <Grid item md={12} sm={6} xs={12}>
+          <div id="expense-table">
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 5,
+                  },
                 },
-              },
-            }}
-            rowsPerPageOptions={[10, 50, 100]}
-          />
+              }}
+              rowsPerPageOptions={[10, 50, 100]}
+            />
+          </div>
         </Grid>
       </Box>
     </Box>

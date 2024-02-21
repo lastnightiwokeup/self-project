@@ -6,8 +6,9 @@ import { Routes, Route } from "react-router-dom";
 // import PageRouter from "./pages/PageRouters";
 import HomePage from "./pages/HomePage";
 import LoginDialog from "./component/base/LoginDialog/LoginDialog";
-import AddRecord from "./pages/AddRecord";
-import Chart from './pages/Chart'
+import AddRecordDialog from "./pages/AddRecordDialog";
+import Chart from "./pages/Chart";
+import CssBaseline from "@mui/material/CssBaseline";
 
 function App() {
   const [data, setData] = useState(null);
@@ -20,6 +21,7 @@ function App() {
 
   return (
     <>
+      <CssBaseline />
       <NavBar />
       <Routes>
         <Route path="/" element={<HomePage />} />
