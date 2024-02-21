@@ -14,6 +14,7 @@ function BasicExample() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/chart">Chart</Nav.Link>
+            <Nav.Link href="/chart">Manage Category</Nav.Link>
           </Nav>
         </Navbar.Collapse>
    

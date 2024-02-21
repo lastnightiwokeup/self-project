@@ -10,6 +10,7 @@ import AddRecordDialog from "./pages/AddRecordDialog";
 import Chart from "./pages/Chart";
 import CssBaseline from "@mui/material/CssBaseline";
 
+
 function App() {
   const [data, setData] = useState(null);
 
@@ -27,7 +28,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="chart" element={<Chart />} />
       </Routes>
-    </>
+    </ >
   );
 }
 
