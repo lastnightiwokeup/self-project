@@ -18,12 +18,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 export default function FormDialog(props) {
   const isOpen = props.isOpen;
 
-
   return (
-    // <React.Fragment>
-    //   <Button variant="outlined" onClick={handleClickOpen}>
-    //     Add
-    //   </Button>
     <Dialog
       onClose={props.onClose}
       open={isOpen}
@@ -43,6 +38,17 @@ export default function FormDialog(props) {
             <DatePicker />
           </LocalizationProvider>
         </Grid>
+
+        <Grid sx={{ mb: 5 }}>
+          <TextField
+            id="outlined-basic"
+            label="Category"
+            variant="outlined"
+            fullWidth
+            select
+          />
+        </Grid>
+
         <Grid sx={{ mb: 5 }}>
           <TextField
             id="outlined-basic"
@@ -51,26 +57,14 @@ export default function FormDialog(props) {
             fullWidth
           />
         </Grid>
-        <Grid container spacing={1} sx={{ mb: 5 }}>
-          <TextField
-            id="outlined-select-currency"
-            select
-            label="Select"
-            defaultValue="EUR"
-            fullWidth
-          >
-            {/* {currencies.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))} */}
-          </TextField>
-        </Grid>
-        <Grid container spacing={1} sx={{ mb: 5 }}>
+        
+        <Grid sx={{ mb: 5 }}>
+          <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
           <OutlinedInput
             id="outlined-adornment-amount"
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             label="Amount"
+            fullWidth
           />
         </Grid>
       </DialogContent>

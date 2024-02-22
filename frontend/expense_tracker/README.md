@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+<!-- # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -194,4 +194,11 @@ EXPENSETRACKER
 
 3.  Deploy to OpenShift
 
-    Deploy the application to openshift using openshift/kubernetes configuration files. A sample configuration file for admin web app in UAT environment is included in the openshift/ folder. Customize it to fit for the application.
+    Deploy the application to openshift using openshift/kubernetes configuration files. A sample configuration file for admin web app in UAT environment is included in the openshift/ folder. Customize it to fit for the application. -->
+
+
+start backend server
+
+-> cd to backend folder
+-> npm run dev
+-> runs at port 8080
