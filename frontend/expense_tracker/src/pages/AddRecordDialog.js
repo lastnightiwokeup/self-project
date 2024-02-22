@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -18,18 +18,39 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 export default function FormDialog(props) {
   const isOpen = props.isOpen;
 
+    // Form
+    const [formInput, dispatchFormInput] = useReducer(
+      (state, action) => ({ ...state, ...action.payload }),
+      {
+        date: "",
+        itemName: "",
+        amount: "",
+        category: "",
+      }
+    );
+
+    const handleFormInput = (evt) => {
+      dispatchFormInput({
+        type: "patch",
+        payload: {
+          [evt.target.name]: evt.target.value,
+        },
+      });
+    };
+
+
   return (
     <Dialog
       onClose={props.onClose}
       open={isOpen}
-      PaperProps={{
-        component: "form",
-        onSubmit: (event) => {
-          event.preventDefault();
-          const formData = new FormData(event.currentTarget);
-          const formJson = Object.fromEntries(formData.entries());
-        },
-      }}
+      // PaperProps={{
+      //   component: "form",
+      //   onSubmit: (event) => {
+      //     event.preventDefault();
+      //     const formData = new FormData(event.currentTarget);
+      //     const formJson = Object.fromEntries(formData.entries());
+      //   },
+      // }}
     >
       <DialogTitle>New Record</DialogTitle>
       <DialogContent>
@@ -45,7 +66,9 @@ export default function FormDialog(props) {
             label="Category"
             variant="outlined"
             fullWidth
-            select
+            onChange={(e) => {
+              handleFormInput(e);
+            }}
           />
         </Grid>
 
@@ -55,6 +78,9 @@ export default function FormDialog(props) {
             label="Item Name"
             variant="outlined"
             fullWidth
+            onChange={(e) => {
+              handleFormInput(e);
+            }}
           />
         </Grid>
         
@@ -65,6 +91,9 @@ export default function FormDialog(props) {
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             label="Amount"
             fullWidth
+            onChange={(e) => {
+              handleFormInput(e);
+            }}
           />
         </Grid>
       </DialogContent>

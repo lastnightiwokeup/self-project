@@ -1,11 +1,48 @@
-// import express, { NextFunction, Request, Response } from 'express';
-// import { requireRole } from '../../middlewares/authn';
-// import { createApiResponse, RoleLabel, RoleUserSummary, VCardUserSummary } from '../../../../models/model';
-// import { ApiError } from '../../../../models/error';
-// import * as VCardUserService from '../../../../services/vcarduser';
+import express, { NextFunction, Request, Response } from 'express';
+import { createApiResponse } from '../../../../models/model';
+import { ApiError } from '../../../../models/error';
+import * as BudgetItemService from '../../../../services/budgetItem';
 // import { parsePaginationRequest, PaginationResult } from '../../../../utilities/pagination';
+import moment from 'moment';
+import 'moment-timezone';
 
-// const router = express.Router();
+const router = express.Router();
+
+
+router.post('/create',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+      const id: number = parseIntInput(req.body.id);
+      const itemName: string = parseStringInput(req.body.itemName);
+      const amount: number = parseIntInput(req.body.amount);
+      const category: string = parseStringInput(req.body.category);
+      const date: Date | null = moment(req?.body?.requestedAt).tz("Asia/Hong_Kong")?.toDate();
+
+
+      if (!amount) { return next(new ApiError('Missing amount')); }
+      if (!itemName) { return next(new ApiError('Missing itemName')); }
+      if (!category) { return next(new ApiError('Missing category')); }
+
+      const itemRes = await BudgetItemService.create(
+        id,
+        itemName,
+        amount,
+        category,
+        date
+      );
+      return res.status(200).send(
+        createApiResponse('item created successfully.', {
+          itemName: itemRes.itemName,
+          amount: itemRes.amount,
+          category: itemRes.category,
+        })
+      );
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
 
 // router.post('/search', requireRole([RoleLabel.SystemAdmin, RoleLabel.VCardUser, RoleLabel.DepartmentAdmin]),
 //   async (req: Request, res: Response, next: NextFunction) => {
@@ -40,22 +77,21 @@
 //     }
 //   });
 
-// function parseStringInput(input: any): string {
-//   if (!input) {
-//     return null;
-//   }
+function parseStringInput(input: any): string {
+  if (!input) {
+    return ''; // Return an empty string instead of null
+  }
 
-//   return String(input);
-// }
+  return String(input);
+}
 
+function parseIntInput(input: any): number {
+  if (!input) {
+    return NaN;
+  }
 
-// function parseIntInput(input: any): number {
-//   if (!input) {
-//     return NaN;
-//   }
-
-//   return parseInt(input, 10);
-// }
+  return parseInt(input, 10);
+}
 
 // function parseStringOrStringArrayInput(input: any): string[] | string {
 //   if (!input) {
@@ -86,4 +122,4 @@
 //   return eventId;
 // }
 
-// export default router;
+export default router;
