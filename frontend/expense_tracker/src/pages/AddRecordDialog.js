@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -14,30 +15,44 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import { createBudgetItem } from "./BudgetItemSlice";
 
 export default function FormDialog(props) {
   const isOpen = props.isOpen;
+  const dispatch = useDispatch();
 
-    // Form
-    const [formInput, dispatchFormInput] = useReducer(
-      (state, action) => ({ ...state, ...action.payload }),
-      {
-        date: "",
-        itemName: "",
-        amount: "",
-        category: "",
-      }
-    );
+  // Form
+  const [formInput, dispatchFormInput] = useReducer(
+    (state, action) => ({ ...state, ...action.payload }),
+    {
+      date: "",
+      itemName: "",
+      amount: "",
+      category: "",
+    }
+  );
 
-    const handleFormInput = (evt) => {
+  console.log(formInput);
+
+  const handleFormInput = (evt) => {
+    const { name, value } = evt.target;
+
+    if (name === "date") {
       dispatchFormInput({
         type: "patch",
         payload: {
-          [evt.target.name]: evt.target.value,
+          date: value,
         },
       });
-    };
-
+    } else {
+      dispatchFormInput({
+        type: "patch",
+        payload: {
+          [name]: value,
+        },
+      });
+    }
+  };
 
   return (
     <Dialog
@@ -56,13 +71,25 @@ export default function FormDialog(props) {
       <DialogContent>
         <Grid sx={{ mb: 5 }}>
           <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DatePicker />
+            <DatePicker
+              id="date"
+              name="date"
+              onChange={(date) => {
+                handleFormInput({
+                  target: {
+                    name: "date",
+                    value: date,
+                  },
+                });
+              }}
+            />
           </LocalizationProvider>
         </Grid>
 
         <Grid sx={{ mb: 5 }}>
           <TextField
-            id="outlined-basic"
+            id="category"
+            name="category"
             label="Category"
             variant="outlined"
             fullWidth
@@ -74,7 +101,8 @@ export default function FormDialog(props) {
 
         <Grid sx={{ mb: 5 }}>
           <TextField
-            id="outlined-basic"
+            id="itemName"
+            name="itemName"
             label="Item Name"
             variant="outlined"
             fullWidth
@@ -83,11 +111,12 @@ export default function FormDialog(props) {
             }}
           />
         </Grid>
-        
+
         <Grid sx={{ mb: 5 }}>
           <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
           <OutlinedInput
-            id="outlined-adornment-amount"
+            id="amount"
+            name="amount"
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             label="Amount"
             fullWidth
@@ -99,7 +128,17 @@ export default function FormDialog(props) {
       </DialogContent>
       <DialogActions>
         <Button onClick={props.onClose}>Cancel</Button>
-        <Button type="submit">Add</Button>
+        <Button
+          onClick={async () => {
+            await dispatch(
+              createBudgetItem({
+                ...formInput,
+              })
+            );
+          }}
+        >
+          Add
+        </Button>
       </DialogActions>
     </Dialog>
   );

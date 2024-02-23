@@ -6,8 +6,11 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/index.ts",
-    "dev": "nodemon src/index.ts",
-    "admin": "ts-node src/index.ts"
+    "admin": "ts-node src/index.ts",
+    "client": "react-scripts start",
+    "dev": "nodemon src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon -r dotenv/config ./src/utilities/database.ts"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +21,8 @@
     "moment": "^2.30.1",
     "morgan": "^1.10.0",
     "mysql2": "^3.9.1",
-    "sequelize": "^6.37.1"
+    "sequelize": "^6.37.1",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import * as budgetItemApi from "../api/budgetItem";
+import * as budgetItemApi from "../api/budgetItem"
 
 import moment from "moment-timezone";
 
@@ -74,6 +74,7 @@ export const createBudgetItem = createAsyncThunk(
   "budgetItem/createBudgetItem",
   async (payload) => {
     try {
+        console.log(payload)
       const itemRes = await budgetItemApi.create(payload);
       return itemRes.data;
 
@@ -105,44 +106,44 @@ export const createBudgetItem = createAsyncThunk(
 //   }
 // );
 
-export const VCardsSlice = createSlice({
-  name: "vCards",
+export const BudgetItemSlice = createSlice({
+  name: "budgetItem",
   initialState,
   reducers: {
     resetStore: () => initialState,
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(search.pending, (state, action) => {
-        state.vCardUserTable.isLoading = true;
-      })
-      .addCase(search.fulfilled, (state, action) => {
-        state.vCardUserTable.isLoading = false;
-        state.vCardUserTable.rows = action?.payload?.rows
-          ?.sort((a, b) => {
-            return moment(a.createdAt).valueOf() > moment(b.createdAt).valueOf()
-              ? 1
-              : -1;
-          })
-          ?.map((row, index) => {
-            row.index = index + 1;
-            row.createdAt = moment(row.createdAt)
-              .tz("Asia/Hong_Kong")
-              .format("YYYY-MM-DD HH:mm:ss");
-            return row;
-          });
-        state.vCardUserTable.totalCount = action?.payload?.totalCount;
-      })
-      .addCase(search.rejected, (state, action) => {
-        state.vCardUserTable.isLoading = false;
-        state.vCardUserTable.rows = [];
-        state.vCardUserTable.totalCount = 0;
-      })
-      .addCase(getVCard.fulfilled, (state, action) => {
-        state.generateVCard = action?.payload?.data?.vCard;
-        state.generateUUID = action?.payload?.data?.uuid;
-      });
+    // builder
+    //   .addCase(search.pending, (state, action) => {
+    //     state.vCardUserTable.isLoading = true;
+    //   })
+    //   .addCase(search.fulfilled, (state, action) => {
+    //     state.vCardUserTable.isLoading = false;
+    //     state.vCardUserTable.rows = action?.payload?.rows
+    //       ?.sort((a, b) => {
+    //         return moment(a.createdAt).valueOf() > moment(b.createdAt).valueOf()
+    //           ? 1
+    //           : -1;
+    //       })
+    //       ?.map((row, index) => {
+    //         row.index = index + 1;
+    //         row.createdAt = moment(row.createdAt)
+    //           .tz("Asia/Hong_Kong")
+    //           .format("YYYY-MM-DD HH:mm:ss");
+    //         return row;
+    //       });
+    //     state.vCardUserTable.totalCount = action?.payload?.totalCount;
+    //   })
+    //   .addCase(search.rejected, (state, action) => {
+    //     state.vCardUserTable.isLoading = false;
+    //     state.vCardUserTable.rows = [];
+    //     state.vCardUserTable.totalCount = 0;
+    //   })
+    //   .addCase(getVCard.fulfilled, (state, action) => {
+    //     state.generateVCard = action?.payload?.data?.vCard;
+    //     state.generateUUID = action?.payload?.data?.uuid;
+    //   });
   },
 });
 
-export default VCardsSlice;
+export default BudgetItemSlice;

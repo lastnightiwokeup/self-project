@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { createApiResponse } from '../../../../models/model';
-import { ApiError } from '../../../../models/error';
-import * as BudgetItemService from '../../../../services/budgetItem';
+import { createApiResponse } from '../../../models/model';
+import { ApiError } from '../../../models/error';
+import * as BudgetItemService from '../../../services/budgetItem';
 // import { parsePaginationRequest, PaginationResult } from '../../../../utilities/pagination';
 import moment from 'moment';
 import 'moment-timezone';
@@ -12,6 +12,8 @@ const router = express.Router();
 router.post('/create',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+
+      console.log(req)
 
       const id: number = parseIntInput(req.body.id);
       const itemName: string = parseStringInput(req.body.itemName);
@@ -31,6 +33,9 @@ router.post('/create',
         category,
         date
       );
+
+      console.log(itemRes)
+
       return res.status(200).send(
         createApiResponse('item created successfully.', {
           itemName: itemRes.itemName,

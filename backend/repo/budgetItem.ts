@@ -1,4 +1,4 @@
-import { sequelize } from '../database/database';
+import { sequelize } from '../src/utilities/database.js';
 import { DataTypes, Model, Optional } from 'sequelize';
 
 interface BudgetItemAttributes {

@@ -1,6 +1,9 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import mysql, { ConnectionOptions } from "mysql2";
+import config from "./utilities/config";
+import application from './framework/app'
+import startServer from './framework/http';
 
 dotenv.config();
 
@@ -9,10 +12,10 @@ const port = process.env.PORT || 8080;
 
 // Create a new MySQL connection
 const access: ConnectionOptions = {
-  host: 'localhost',
-  user: 'root',
-  password: 'admin1234',
-  database: 'budget_tracker'
+  host: config.HOST,
+  user: config.USER,
+  password: config.PASSWORD,
+  database: config.DB
 };
 
 const conn = mysql.createConnection(access);
@@ -33,6 +36,8 @@ app.get("/", (req: Request, res: Response) => {
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
+
+startServer(application);
 
 // Close the MySQL connection when the application is shutting down
 process.on('exit', () => {
