@@ -4,98 +4,111 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddRecordDialog from "../../pages/AddRecordDialog";
+import EditRecordDialog from "../../pages/EditRecordDialog";
 import { DataGrid } from "@mui/x-data-grid";
 import Grid from "@mui/material/Grid";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-const columns = [
-  { field: "id", headerName: "ID", width: 150 },
-  {
-    field: "itemName",
-    headerName: "Item Name",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "amount",
-    headerName: "Amount",
-    width: 100,
-    type: "number",
-    editable: true,
-  },
-  {
-    field: "date",
-    headerName: "Date",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "category",
-    headerName: "Category",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 160,
-  },
-  {
-    field: "",
-    headerName: "",
-    description: "",
-    sortable: false,
-    width: 220,
-    renderCell: (params) => {
-      return (
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Button
-            variant="contained"
-            color="warning"
-            // onClick={() => {
-            //   setvCardRecordToModify(params.row);
-            //   setBusinessCardRecordToModify(params.row.businessCards);
-            // }}
-            sx={{ mr: "0.5rem" }}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            // onClick={() => {
-            //   setvCardRecordToModify(params.row);
-            //   setBusinessCardRecordToModify(params.row.businessCards);
-            // }}
-            sx={{ mr: "0.5rem" }}
-          >
-            <DeleteIcon />
-          </Button>
-        </div>
-      );
-    },
-  },
-];
-
-const rows = [
-  {
-    id: 1,
-    itemName: "Coffee",
-    amount: 12,
-    date: "2024/2/2",
-    category: "Drink",
-  },
-  {
-    id: 2,
-    itemName: "Clothes",
-    amount: 46,
-    date: "2024/2/2",
-    category: "Food",
-  },
-  { id: 3, itemName: "Toys", amount: 100, date: "2024/2/2", category: "Food" },
-  { id: 4, itemName: "Phone", amount: 25, date: "2024/2/2", category: "Food" },
-  { id: 5, itemName: "Pill", amount: 27, date: "2024/2/2", category: "Food" },
-  { id: 6, itemName: "Fee", amount: 500, date: "2024/2/2", category: "Food" },
-];
-
 export default function DataGridDemo(props) {
   const [isOpen, setIsOpen] = useState(false);
+  const [recordToModify, setRecordToModify] = useState(null);
+
+  const columns = [
+    { field: "id", headerName: "ID", width: 150 },
+    {
+      field: "itemName",
+      headerName: "Item Name",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "amount",
+      headerName: "Amount",
+      width: 100,
+      type: "number",
+      editable: true,
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "category",
+      headerName: "Category",
+      description: "This column has a value getter and is not sortable.",
+      sortable: false,
+      width: 160,
+    },
+    {
+      field: "",
+      headerName: "",
+      description: "",
+      sortable: false,
+      width: 220,
+      renderCell: (params) => {
+        return (
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={() => {
+                setRecordToModify(params.row);
+              }}
+              sx={{ mr: "0.5rem" }}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              // onClick={() => {
+              //   setvCardRecordToModify(params.row);
+              //   setBusinessCardRecordToModify(params.row.businessCards);
+              // }}
+              sx={{ mr: "0.5rem" }}
+            >
+              <DeleteIcon />
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
+
+  const rows = [
+    {
+      id: 1,
+      itemName: "Coffee",
+      amount: 12,
+      date: "2024/1/2",
+      category: "Drink",
+    },
+    {
+      id: 2,
+      itemName: "Clothes",
+      amount: 46,
+      date: "2024/2/2",
+      category: "Food",
+    },
+    {
+      id: 3,
+      itemName: "Toys",
+      amount: 100,
+      date: "2023/12/10",
+      category: "Food",
+    },
+    {
+      id: 4,
+      itemName: "Phone",
+      amount: 25,
+      date: "2023/11/29",
+      category: "Food",
+    },
+    { id: 5, itemName: "Pill", amount: 27, date: "2024/2/2", category: "Food" },
+    { id: 6, itemName: "Fee", amount: 500, date: "2024/2/2", category: "Food" },
+  ];
 
   return (
     <>
@@ -105,7 +118,16 @@ export default function DataGridDemo(props) {
           setIsOpen(false);
         }}
       ></AddRecordDialog>
-      
+
+      <EditRecordDialog
+        isOpen={isOpen}
+        records={recordToModify}
+        onClose={() => {
+          setIsOpen(false);
+          setRecordToModify(null);
+        }}
+      ></EditRecordDialog>
+
       <Box sx={{ height: 500, width: "60%", margin: "0 auto" }}>
         <Grid
           container

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -14,81 +15,147 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import { createBudgetItem } from "./BudgetItemSlice";
+import moment from "moment";
 
-export default function FormDialog() {
-  const [open, setOpen] = useState(false);
+export default function EditRecordDialog(props) {
+  const isOpen = props.isOpen;
+  const dispatch = useDispatch();
+  const record = props.records;
+  const [value, setValue] = useState("");
+  console.log(record);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  // Form
+  const [formInput, dispatchFormInput] = useReducer(
+    (state, action) => ({ ...state, ...action.payload }),
+    {
+      date: "",
+      itemName: "",
+      amount: "",
+      category: "",
+    }
+  );
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleFormInput = (evt) => {
+    const { name, value } = evt.target;
+
+    if (name === "date") {
+      dispatchFormInput({
+        type: "patch",
+        payload: {
+          date: value,
+        },
+      });
+    } else {
+      dispatchFormInput({
+        type: "patch",
+        payload: {
+          [name]: value,
+        },
+      });
+    }
   };
 
   return (
-    <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Edit
-      </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          component: "form",
-          onSubmit: (event) => {
-            event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            const formJson = Object.fromEntries(formData.entries());
-            handleClose();
-          },
-        }}
-      >
-        <DialogTitle>New Record</DialogTitle>
-        <DialogContent>
-          <Grid sx={{ mb: 5 }}>
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-              <DatePicker />
-            </LocalizationProvider>
-          </Grid>
-          <Grid sx={{ mb: 5 }}>
-            <TextField
-              id="outlined-basic"
-              label="Item Name"
-              variant="outlined"
-              fullWidth
+    <Dialog open={props.records !== null}>
+      <DialogTitle>Edit Record</DialogTitle>
+      <DialogContent>
+        <Grid sx={{ mb: 5 }}>
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <DatePicker
+              id="date"
+              name="date"
+              value={moment(
+                record &&
+                  record.date !== null &&
+                  record.date !== undefined
+                  ? record.date
+                  : ""
+              )}
+              onChange={(newValue) => setValue(newValue)}
             />
-          </Grid>
-          <Grid container spacing={1} sx={{ mb: 5 }}>
-            <TextField
-              id="outlined-select-currency"
-              select
-              label="Select"
-              defaultValue="EUR"
-              fullWidth
-            >
-              {/* {currencies.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))} */}
-            </TextField>
-          </Grid>
-          <Grid container spacing={1} sx={{ mb: 5 }}>
-            <OutlinedInput
-              id="outlined-adornment-amount"
-              startAdornment={
-                <InputAdornment position="start">$</InputAdornment>
-              }
-              label="Amount"
-            />
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Add</Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
+          </LocalizationProvider>
+        </Grid>
+
+        <Grid sx={{ mb: 5 }}>
+          <TextField
+            id="category"
+            name="category"
+            label="Category"
+            variant="outlined"
+            fullWidth
+            defaultValue={
+              record &&
+              record.category !== null &&
+              record.category !== undefined
+                ? record.category
+                : ""
+            }
+            onChange={(e) => {
+              handleFormInput(e);
+            }}
+          />
+        </Grid>
+
+        <Grid sx={{ mb: 5 }}>
+          <TextField
+            id="itemName"
+            name="itemName"
+            label="Item Name"
+            variant="outlined"
+            fullWidth
+            defaultValue={
+              record &&
+              record.itemName !== null &&
+              record.itemName !== undefined
+                ? record.itemName
+                : ""
+            }
+            onChange={(e) => {
+              handleFormInput(e);
+            }}
+          />
+        </Grid>
+
+        <Grid sx={{ mb: 5 }}>
+          <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+          <OutlinedInput
+            id="amount"
+            name="amount"
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            label="Amount"
+            fullWidth
+            defaultValue={
+              record && record.amount !== null && record.amount !== undefined
+                ? record.amount
+                : ""
+            }
+            onChange={(e) => {
+              handleFormInput(e);
+            }}
+          />
+        </Grid>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() => {
+            props.onClose();
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+        // onClick={async () => {
+        //   await dispatch(
+        //     createBudgetItem({
+        //       ...formInput,
+        //     })
+        //   );
+        // }}
+        >
+          Add
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

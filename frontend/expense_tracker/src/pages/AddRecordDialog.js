@@ -17,7 +17,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import { createBudgetItem } from "./BudgetItemSlice";
 
-export default function FormDialog(props) {
+export default function AddRecordDialog(props) {
   const isOpen = props.isOpen;
   const dispatch = useDispatch();
 
