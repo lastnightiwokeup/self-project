@@ -1,6 +1,6 @@
 
-import logger from '../utilities/logger';
-import * as config from '../utilities/config';
+// import logger from '../utilities/logger';
+// import * as config from '../utilities/config';
 import http from 'http';
 import express from 'express';
 
@@ -8,14 +8,14 @@ function startServer(expressApp: express.Express) {
   /**
    * Create HTTP server.
    */
-  logger.debug('Initializing http lisener...');
+//   logger.debug('Initializing http lisener...');
   const server = http.createServer(expressApp);
-  logger.debug('Initializing http lisener completed.');
+//   logger.debug('Initializing http lisener completed.');
 
   /**
    * Listen on provided port, on all network interfaces.
    */
-  server.listen(config.HTTP_LISTEN_PORT);
+  server.listen(3000);
   server.on('error', onError);
   server.on('listening', onListening);
 
@@ -28,9 +28,9 @@ function startServer(expressApp: express.Express) {
       throw error;
     }
 
-    const bind = typeof config.HTTP_LISTEN_PORT === 'string'
-      ? 'Pipe ' + config.HTTP_LISTEN_PORT
-      : 'Port ' + config.HTTP_LISTEN_PORT;
+    const bind = typeof 3000 === 'string'
+      ? 'Pipe ' + 3000
+      : 'Port ' + 3000;
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
@@ -55,7 +55,7 @@ function startServer(expressApp: express.Express) {
     const bind = typeof addr === 'string'
       ? 'pipe ' + addr
       : 'port ' + addr?.port;
-    logger.info('Listening on ' + bind);
+    // logger.info('Listening on ' + bind);
   }
 
 }

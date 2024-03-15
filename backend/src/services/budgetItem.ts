@@ -1,7 +1,7 @@
 
 import { Op, WhereAttributeHash } from 'sequelize';
 import { BudgetItemSummary } from '../models/model';
-import { BudgetItem, BudgetItemAttributes } from '../../repo/budgetItem';
+import { BudgetItem, BudgetItemAttributes } from '../repo/budgetItem';
 // import { PaginationParam, PaginationResult } from '../utilities/pagination';
 
 async function create(
