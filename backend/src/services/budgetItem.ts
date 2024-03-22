@@ -5,14 +5,13 @@ import { BudgetItem, BudgetItemAttributes } from '../repo/budgetItem';
 // import { PaginationParam, PaginationResult } from '../utilities/pagination';
 
 async function create(
-    id:number,
     itemName: string,
     amount: number,
     category: string,
-    date: Date,
+    date: string,
 ): Promise<any> {
     try {
-        const itemRes: BudgetItemAttributes = await BudgetItem.create({id, itemName, amount, category, date });
+        const itemRes: BudgetItemAttributes = await BudgetItem.create({itemName, amount, category, date });
 
         return itemRes;
 

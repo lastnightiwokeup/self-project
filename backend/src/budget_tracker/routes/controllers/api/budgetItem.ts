@@ -13,13 +13,11 @@ router.post('/create',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-      console.log(req)
-
       const id: number = parseIntInput(req.body.id);
       const itemName: string = parseStringInput(req.body.itemName);
       const amount: number = parseIntInput(req.body.amount);
       const category: string = parseStringInput(req.body.category);
-      const date: Date | null = moment(req?.body?.requestedAt).tz("Asia/Hong_Kong")?.toDate();
+      const date: string = parseStringInput(req.body.date);
 
 
       if (!amount) { return next(new ApiError('Missing amount')); }
@@ -27,14 +25,11 @@ router.post('/create',
       if (!category) { return next(new ApiError('Missing category')); }
 
       const itemRes = await BudgetItemService.create(
-        id,
         itemName,
         amount,
         category,
         date
       );
-
-      console.log(itemRes)
 
       return res.status(200).send(
         createApiResponse('item created successfully.', {

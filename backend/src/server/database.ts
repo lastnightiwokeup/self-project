@@ -10,8 +10,19 @@ DATE.prototype._stringify = function (date: any, options: any) {
   
 const sequelize = new Sequelize(
     'budget_tracker', 'root', 'Lauren0627', {
+    logging: console.log,
     host: 'localhost',
     dialect: 'mysql'
 });
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
 
 export { sequelize };

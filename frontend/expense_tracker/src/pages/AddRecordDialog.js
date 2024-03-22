@@ -69,21 +69,34 @@ export default function AddRecordDialog(props) {
     >
       <DialogTitle>New Record</DialogTitle>
       <DialogContent>
-        <Grid sx={{ mb: 5 }}>
+        {/* <Grid sx={{ mb: 5 }}>
           <LocalizationProvider dateAdapter={AdapterMoment}>
             <DatePicker
-              id="date"
-              name="date"
-              onChange={(date) => {
+              id="createdAt"
+              name="createdAt"
+              onChange={(createdAt) => {
                 handleFormInput({
                   target: {
-                    name: "date",
-                    value: date,
+                    name: "createdAt",
+                    value: createdAt,
                   },
                 });
               }}
             />
           </LocalizationProvider>
+        </Grid> */}
+
+        <Grid sx={{ mb: 5 }}>
+          <TextField
+            id="date"
+            name="date"
+            label="Date"
+            variant="outlined"
+            fullWidth
+            onChange={(e) => {
+              handleFormInput(e);
+            }}
+          />
         </Grid>
 
         <Grid sx={{ mb: 5 }}>

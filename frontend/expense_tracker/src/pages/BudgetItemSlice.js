@@ -76,6 +76,7 @@ export const createBudgetItem = createAsyncThunk(
     try {
         console.log(payload)
       const itemRes = await budgetItemApi.create(payload);
+      console.log(itemRes)
       return itemRes.data;
 
       //   return { message: vCardRes.data.message };
