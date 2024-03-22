@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import NavBar from "../src/component/base/NavBar/NavBar";
 import { Routes, Route } from "react-router-dom";
 // import PageRouter from "./pages/PageRouters";
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/ExpenseTable";
 import LoginDialog from "./component/base/LoginDialog/LoginDialog";
 import AddRecordDialog from "./pages/AddRecordDialog";
 import Chart from "./pages/Chart";

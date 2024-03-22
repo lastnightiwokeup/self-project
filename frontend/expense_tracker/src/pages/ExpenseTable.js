@@ -1,19 +1,64 @@
 import React, { useEffect, useState, useReducer } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddRecordDialog from "../../pages/AddRecordDialog";
-import EditRecordDialog from "../../pages/EditRecordDialog";
+import AddRecordDialog from "../pages/AddRecordDialog";
+import EditRecordDialog from "../pages/EditRecordDialog";
 import { DataGrid } from "@mui/x-data-grid";
+import slice from "./BudgetItemSlice";
+import { search as searchItemRecord } from "./BudgetItemSlice";
 import Grid from "@mui/material/Grid";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-export default function DataGridDemo(props) {
+export default function ExpenseTable(props) {
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
   const [recordToModify, setRecordToModify] = useState(null);
 
-  const columns = [
+  // Slice for this page
+  const sliceState = useSelector((state) => state.budgetItem);
+  console.log(sliceState);
+
+  const [pageSize, setPageSize] = useState(50);
+  const [pageNum, setPageNum] = useState(0);
+  // Search Form Input Values
+  const [searchInput, dispatchSearchInput] = useReducer(
+    (state, action) => ({ ...state, ...action.payload }),
+    {
+      itemName: "",
+    }
+  );
+
+  const handleSearchInput = (evt) => {
+    dispatchSearchInput({
+      type: "patch",
+      payload: { [evt.target.name]: evt.target.value },
+    });
+  };
+
+  const submitSearch = () => {
+    dispatch(searchItemRecord({ ...searchInput, pageSize, pageNum }));
+  };
+
+  const clearInput = () => {
+    dispatchSearchInput({
+      type: "patch",
+      payload: {
+        itemName: "",
+      },
+    });
+  };
+
+  useEffect(() => {
+    submitSearch();
+  }, [pageSize, pageNum]);
+
+  useEffect(() => {
+    return () => dispatch(slice.actions.resetStore());
+  }, []);
+
+  const columnForDataGrid = [
     { field: "id", headerName: "ID", width: 150 },
     {
       field: "itemName",
@@ -24,7 +69,7 @@ export default function DataGridDemo(props) {
     {
       field: "amount",
       headerName: "Amount",
-      width: 100,
+      width: 120,
       type: "number",
       editable: true,
     },
@@ -37,7 +82,7 @@ export default function DataGridDemo(props) {
     {
       field: "category",
       headerName: "Category",
-      description: "This column has a value getter and is not sortable.",
+      description: "",
       sortable: false,
       width: 160,
     },
@@ -77,45 +122,13 @@ export default function DataGridDemo(props) {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      itemName: "Coffee",
-      amount: 12,
-      date: "2024/1/2",
-      category: "Drink",
-    },
-    {
-      id: 2,
-      itemName: "Clothes",
-      amount: 46,
-      date: "2024/2/2",
-      category: "Food",
-    },
-    {
-      id: 3,
-      itemName: "Toys",
-      amount: 100,
-      date: "2023/12/10",
-      category: "Food",
-    },
-    {
-      id: 4,
-      itemName: "Phone",
-      amount: 25,
-      date: "2023/11/29",
-      category: "Food",
-    },
-    { id: 5, itemName: "Pill", amount: 27, date: "2024/2/2", category: "Food" },
-    { id: 6, itemName: "Fee", amount: 500, date: "2024/2/2", category: "Food" },
-  ];
-
   return (
     <>
       <AddRecordDialog
         isOpen={isOpen}
         onClose={() => {
           setIsOpen(false);
+          submitSearch();
         }}
       ></AddRecordDialog>
 
@@ -179,16 +192,18 @@ export default function DataGridDemo(props) {
           <Grid item md={12} sm={6} xs={12}>
             <div id="expense-table">
               <DataGrid
-                rows={rows}
-                columns={columns}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 5,
-                    },
-                  },
-                }}
+                columns={columnForDataGrid}
+                rows={sliceState.budgetItemTable.rows}
+                rowCount={sliceState.budgetItemTable.totalCount}
+                loading={sliceState.budgetItemTable.isLoading}
+                page={pageNum}
+                onPageChange={(newPageNum) => setPageNum(newPageNum)}
+                pageSize={pageSize}
+                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                 rowsPerPageOptions={[10, 50, 100]}
+                pagination
+                paginationMode="server"
+                autoHeight
               />
             </div>
           </Grid>

@@ -2,7 +2,7 @@ import { sequelize } from '../server/database'
 import { DataTypes, Model, Optional } from 'sequelize';
 
 interface BudgetItemAttributes {
-    id?: number;
+    id: number;
     itemName: string;
     amount: number;
     category: string;
@@ -10,7 +10,7 @@ interface BudgetItemAttributes {
 };
 
 class BudgetItem extends Model<BudgetItemAttributes> implements BudgetItemAttributes {
-    id?: number;
+    id: number;
     itemName: string;
     amount: number;
     category: string;

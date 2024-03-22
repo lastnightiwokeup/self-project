@@ -148,6 +148,7 @@ export default function AddRecordDialog(props) {
                 ...formInput,
               })
             );
+            props.onClose();
           }}
         >
           Add

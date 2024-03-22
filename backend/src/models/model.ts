@@ -2,7 +2,7 @@ interface BudgetItemSummary {
     id: number;
     itemName: string;
     amount: number;
-    date: Date,
+    date: string,
     category: string,
 };
 
