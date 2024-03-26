@@ -8,25 +8,33 @@ import AddRecordDialog from "../pages/AddRecordDialog";
 import EditRecordDialog from "../pages/EditRecordDialog";
 import { DataGrid } from "@mui/x-data-grid";
 import slice from "./BudgetItemSlice";
-import { search as searchItemRecord } from "./BudgetItemSlice";
+import {
+  search as searchItemRecord,
+  deleteItemRecord,
+} from "./BudgetItemSlice";
 import Grid from "@mui/material/Grid";
+import DeleteDialog from "./DeleteDialog";
 
 export default function ExpenseTable(props) {
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
-  const [recordToModify, setRecordToModify] = useState(null);
-
+  const [recordToEdit, setRecordToEdit] = useState(null);
+  const [recordToDelete, setRecordToDelete] = useState(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   // Slice for this page
   const sliceState = useSelector((state) => state.budgetItem);
-  console.log(sliceState);
-
   const [pageSize, setPageSize] = useState(50);
   const [pageNum, setPageNum] = useState(0);
+
   // Search Form Input Values
   const [searchInput, dispatchSearchInput] = useReducer(
     (state, action) => ({ ...state, ...action.payload }),
     {
+      id: "",
       itemName: "",
+      amount: "",
+      date: "",
+      category: "",
     }
   );
 
@@ -45,7 +53,11 @@ export default function ExpenseTable(props) {
     dispatchSearchInput({
       type: "patch",
       payload: {
+        id: "",
         itemName: "",
+        amount: "",
+        date: "",
+        category: "",
       },
     });
   };
@@ -59,39 +71,36 @@ export default function ExpenseTable(props) {
   }, []);
 
   const columnForDataGrid = [
-    { field: "id", headerName: "ID", width: 150 },
+    { field: "index", headerName: "", width: 80},
     {
       field: "itemName",
       headerName: "Item Name",
-      width: 150,
-      editable: true,
+      width: 200,
     },
     {
       field: "amount",
       headerName: "Amount",
-      width: 120,
-      type: "number",
-      editable: true,
+      width: 200,
     },
     {
       field: "date",
       headerName: "Date",
-      width: 150,
-      editable: true,
+      width: 200,
+      sortable: true,
     },
     {
       field: "category",
       headerName: "Category",
       description: "",
-      sortable: false,
-      width: 160,
+      sortable: true,
+      width: 200,
     },
     {
       field: "",
       headerName: "",
       description: "",
       sortable: false,
-      width: 220,
+      width: 300,
       renderCell: (params) => {
         return (
           <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -99,7 +108,8 @@ export default function ExpenseTable(props) {
               variant="contained"
               color="warning"
               onClick={() => {
-                setRecordToModify(params.row);
+                setRecordToEdit(params.row);
+                setIsOpen(true);
               }}
               sx={{ mr: "0.5rem" }}
             >
@@ -108,10 +118,10 @@ export default function ExpenseTable(props) {
             <Button
               variant="contained"
               color="error"
-              // onClick={() => {
-              //   setvCardRecordToModify(params.row);
-              //   setBusinessCardRecordToModify(params.row.businessCards);
-              // }}
+              onClick={() => {
+                setRecordToDelete(params.row.id);
+                setIsDeleteDialogOpen(true);
+              }}
               sx={{ mr: "0.5rem" }}
             >
               <DeleteIcon />
@@ -134,12 +144,22 @@ export default function ExpenseTable(props) {
 
       <EditRecordDialog
         isOpen={isOpen}
-        records={recordToModify}
+        recordToEdit={recordToEdit}
         onClose={() => {
           setIsOpen(false);
-          setRecordToModify(null);
+          setRecordToEdit(null);
+          submitSearch();
         }}
       ></EditRecordDialog>
+
+      <DeleteDialog
+        isOpen={isDeleteDialogOpen}
+        itemToDelete={recordToDelete}
+        onClose={() => {
+          setIsDeleteDialogOpen(false);
+          submitSearch();
+        }}
+      />
 
       <Box sx={{ height: 500, width: "60%", margin: "0 auto" }}>
         <Grid
@@ -176,21 +196,35 @@ export default function ExpenseTable(props) {
             sx={{ display: "flex", justifyContent: "space-between" }}
           >
             <TextField
-              id="fullName"
-              label="Search"
+              id="itemName"
+              label="Item Name"
               variant="outlined"
-              name="fullName"
+              name="itemName"
+              value={searchInput.itemName}
+              InputLabelProps={{
+                shrink: searchInput.itemName !== "",
+              }}
+              onChange={(e) => {
+                handleSearchInput(e);
+              }}
             />
             <Grid sx={{ mt: 1, ml: 2 }}>
-              <Button variant="contained" color="secondary">
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={(e) => {
+                  submitSearch();
+                  clearInput();
+                }}
+              >
                 Search
               </Button>
             </Grid>
           </Grid>
         </Grid>
-        <Box mb={2}>
+        <Box mb={4}>
           <Grid item md={12} sm={6} xs={12}>
-            <div id="expense-table">
+            <div id="budget-table">
               <DataGrid
                 columns={columnForDataGrid}
                 rows={sliceState.budgetItemTable.rows}

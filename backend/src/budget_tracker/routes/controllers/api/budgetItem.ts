@@ -12,7 +12,7 @@ router.post('/search', async (req: Request, res: Response, next: NextFunction) =
   try {
     const paginationParam = parsePaginationRequest(req.body);
     const id: number = parseIntInput(req.body.id);
-    const itemName: string = parseStringInput(req.body.firstName);
+    const itemName: string = parseStringInput(req.body.itemName);
     const amount: number = parseIntInput(req.body.amount);
     const date: string = parseStringInput(req.body.date);
     const category: string = parseStringInput(req.body.category);
@@ -34,7 +34,6 @@ router.post('/create',
       const category: string = parseStringInput(req.body.category);
       const date: string = parseStringInput(req.body.date);
 
-
       if (!amount) { return next(new ApiError('Missing amount')); }
       if (!itemName) { return next(new ApiError('Missing itemName')); }
       if (!category) { return next(new ApiError('Missing category')); }
@@ -46,9 +45,10 @@ router.post('/create',
         category,
         date
       );
-      console.log(itemRes)
+
       return res.status(200).send(
-        createApiResponse('Item created successfully.', {
+        createApiResponse('Record created successfully.', {
+          date: itemRes.date,
           itemName: itemRes.itemName,
           amount: itemRes.amount,
           category: itemRes.category,
@@ -59,6 +59,54 @@ router.post('/create',
     }
   }
 );
+
+router.post('/edit',async (req: Request, res: Response, next: NextFunction) => {
+  try {
+
+    const id: number = parseIntInput(req.body.id);
+    const itemName: string = parseStringInput(req.body.itemName);
+    const amount: number = parseIntInput(req.body.amount);
+    const category: string = parseStringInput(req.body.category);
+    const date: string = parseStringInput(req.body.date);
+
+    if (!amount) { return next(new ApiError('Missing amount')); }
+    if (!itemName) { return next(new ApiError('Missing itemName')); }
+    if (!category) { return next(new ApiError('Missing category')); }
+
+
+
+    const itemRes = await BudgetItemService.edit(
+      id,
+      itemName,
+      amount,
+      category,
+      date
+    );
+
+    return res.status(200).send
+      (createApiResponse('Record modified successfully.', {
+        date: itemRes.date,
+        itemName: itemRes.itemName,
+        amount: itemRes.amount,
+        category: itemRes.category,
+      }));
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.post('/deleteItem', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+
+    const id: number = parseIntInput(req.body.id);
+
+    await BudgetItemService.deleteItem(id);
+
+    return res.status(200).send(createApiResponse('Item deleted successfully.', null));
+  } catch (err) {
+    return next(err);
+  }
+});
 
 
 function parseStringInput(input: any): string {

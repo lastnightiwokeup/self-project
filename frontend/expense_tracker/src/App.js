@@ -5,8 +5,7 @@ import NavBar from "../src/component/base/NavBar/NavBar";
 import { Routes, Route } from "react-router-dom";
 // import PageRouter from "./pages/PageRouters";
 import HomePage from "./pages/ExpenseTable";
-import LoginDialog from "./component/base/LoginDialog/LoginDialog";
-import AddRecordDialog from "./pages/AddRecordDialog";
+import NotificationSnackbar from "./component/base/NotificationSnackbar/NotificationSnackbar";
 import Chart from "./pages/Chart";
 import CssBaseline from "@mui/material/CssBaseline";
 
@@ -24,6 +23,7 @@ function App() {
     <>
       <CssBaseline />
       <NavBar />
+      {/* <NotificationSnackbar /> */}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="chart" element={<Chart />} />

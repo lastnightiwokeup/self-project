@@ -1,29 +1,25 @@
-import React, { useState, useEffect, useReducer } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import Grid from "@mui/material/Grid";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import { createBudgetItem } from "./BudgetItemSlice";
+import React, { useEffect, useReducer } from "react";
+import { useDispatch } from "react-redux";
 import moment from "moment";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Grid,
+  TextField,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+  Button,
+} from "@mui/material";
+import { editBudgetItem } from "./BudgetItemSlice";
 
-export default function EditRecordDialog(props) {
+function EditRecordDialog(props) {
   const isOpen = props.isOpen;
+  const isClose = props.onClose;
   const dispatch = useDispatch();
-  const record = props.records;
-  const [value, setValue] = useState("");
-  console.log(record);
+  const recordToEdit = props.recordToEdit;
 
   // Form
   const [formInput, dispatchFormInput] = useReducer(
@@ -37,125 +33,96 @@ export default function EditRecordDialog(props) {
   );
 
   const handleFormInput = (evt) => {
-    const { name, value } = evt.target;
-
-    if (name === "date") {
-      dispatchFormInput({
-        type: "patch",
-        payload: {
-          date: value,
-        },
-      });
-    } else {
-      dispatchFormInput({
-        type: "patch",
-        payload: {
-          [name]: value,
-        },
-      });
-    }
+    dispatchFormInput({
+      payload: { [evt.target.name]: evt.target.value },
+    });
   };
 
+  useEffect(() => {
+    if (recordToEdit) {
+      dispatchFormInput({ payload: recordToEdit });
+    }
+  }, [recordToEdit]);
+
   return (
-    <Dialog open={props.records !== null}>
-      <DialogTitle>Edit Record</DialogTitle>
-      <DialogContent>
-        <Grid sx={{ mb: 5 }}>
-          <LocalizationProvider dateAdapter={AdapterMoment}>
-            <DatePicker
+    <>
+      <Dialog open={isOpen} onClose={isClose}>
+        <DialogTitle>Edit Record</DialogTitle>
+        <DialogContent>
+          <Grid sx={{ mb: 5 }}>
+            <TextField
               id="date"
               name="date"
-              value={moment(
-                record &&
-                  record.date !== null &&
-                  record.date !== undefined
-                  ? record.date
-                  : ""
-              )}
-              onChange={(newValue) => setValue(newValue)}
+              label="Date"
+              variant="outlined"
+              fullWidth
+              value={formInput.date}
+              onChange={(e) => {
+                handleFormInput(e);
+              }}
             />
-          </LocalizationProvider>
-        </Grid>
+          </Grid>
+          <Grid sx={{ mb: 5 }}>
+            <TextField
+              id="category"
+              name="category"
+              label="Category"
+              variant="outlined"
+              fullWidth
+              value={formInput.category}
+              onChange={(e) => {
+                handleFormInput(e);
+              }}
+            />
+          </Grid>
 
-        <Grid sx={{ mb: 5 }}>
-          <TextField
-            id="category"
-            name="category"
-            label="Category"
-            variant="outlined"
-            fullWidth
-            defaultValue={
-              record &&
-              record.category !== null &&
-              record.category !== undefined
-                ? record.category
-                : ""
-            }
-            onChange={(e) => {
-              handleFormInput(e);
-            }}
-          />
-        </Grid>
+          <Grid sx={{ mb: 5 }}>
+            <TextField
+              id="itemName"
+              name="itemName"
+              label="Item Name"
+              variant="outlined"
+              fullWidth
+              value={formInput.itemName}
+              onChange={(e) => {
+                handleFormInput(e);
+              }}
+            />
+          </Grid>
 
-        <Grid sx={{ mb: 5 }}>
-          <TextField
-            id="itemName"
-            name="itemName"
-            label="Item Name"
-            variant="outlined"
-            fullWidth
-            defaultValue={
-              record &&
-              record.itemName !== null &&
-              record.itemName !== undefined
-                ? record.itemName
-                : ""
-            }
-            onChange={(e) => {
-              handleFormInput(e);
+          <Grid sx={{ mb: 5 }}>
+            <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+            <OutlinedInput
+              id="amount"
+              name="amount"
+              startAdornment={
+                <InputAdornment position="start">$</InputAdornment>
+              }
+              label="Amount"
+              fullWidth
+              value={formInput.amount}
+              onChange={(e) => {
+                handleFormInput(e);
+              }}
+            />
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={isClose}>Cancel</Button>
+          <Button
+            onClick={async () => {
+              await dispatch(
+                editBudgetItem({ ...formInput, id: recordToEdit.id })
+              );
+              props.onClose();
             }}
-          />
-        </Grid>
-
-        <Grid sx={{ mb: 5 }}>
-          <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
-          <OutlinedInput
-            id="amount"
-            name="amount"
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            label="Amount"
-            fullWidth
-            defaultValue={
-              record && record.amount !== null && record.amount !== undefined
-                ? record.amount
-                : ""
-            }
-            onChange={(e) => {
-              handleFormInput(e);
-            }}
-          />
-        </Grid>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={() => {
-            props.onClose();
-          }}
-        >
-          Cancel
-        </Button>
-        <Button
-        // onClick={async () => {
-        //   await dispatch(
-        //     createBudgetItem({
-        //       ...formInput,
-        //     })
-        //   );
-        // }}
-        >
-          Add
-        </Button>
-      </DialogActions>
-    </Dialog>
+          >
+            Edit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
+
+export default EditRecordDialog;

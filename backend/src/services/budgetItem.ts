@@ -5,7 +5,7 @@ import { BudgetItem, BudgetItemAttributes } from '../repo/budgetItem';
 import { PaginationParam, PaginationResult } from '../utilities/pagination';
 
 interface SearchFilter {
-    id:number,
+    id: number,
     itemName: string,
     amount: number,
     category: string,
@@ -31,9 +31,8 @@ async function searchPaginated(filter: SearchFilter, paginationParam: NonNullabl
 
         const budgetItems = await BudgetItem.findAndCountAll({
             where: {
-                [Op.and]:
-                    [searchFilters],
-            } as WhereAttributeHash,
+                [Op.and]: searchFilters,
+            },
             ...paginationParam,
         });
         return {
@@ -55,118 +54,68 @@ async function searchPaginated(filter: SearchFilter, paginationParam: NonNullabl
     }
 }
 
-    async function create(
-        id:number,
-        itemName: string,
-        amount: number,
-        category: string,
-        date: string,
-    ): Promise<any> {
-        try {
-            const itemRes: BudgetItemAttributes = await BudgetItem.create({id, itemName, amount, category, date });
-            console.log(itemRes)
-            return itemRes;
+async function create(
+    id: number,
+    itemName: string,
+    amount: number,
+    category: string,
+    date: string,
+): Promise<any> {
+    try {
+        const itemRes: BudgetItemAttributes = await BudgetItem.create({ id, itemName, amount, category, date });
+        console.log(itemRes)
+        return itemRes;
 
-        } catch (error) {
-            console.error('Error in database interaction:', error);
-            throw error;
-        }
+    } catch (error) {
+        console.error('Error in database interaction:', error);
+        throw error;
     }
+}
 
-    // async function modify(
-    //     doer: MeSummary,
-    //     uuid?: string,
-    //     vCard?: string,
-    //     bytes?: number,
-    //     netId?: string,
-    //     prefix?: string,
-    //     firstName?: string,
-    //     lastName?: string,
-    //     title?: string,
-    //     organization?: string,
-    //     deptAbbr?: string,
-    //     workPhone?: string,
-    //     mobilePhone?: string,
-    //     fax?: string,
-    //     email?: string,
-    //     website?: string,
-    //     addressLine1?: string,
-    //     addressLine2?: string,
-    //     ORCID?: string,
-    //     modifiedBy?: string
-    // ): Promise<any> {
-    //     try {
-    //         const existingVCard = await VCards.findByPk(uuid);
-    //         if (!existingVCard) {
-    //             throw new Error(`VCardUser with ID ${uuid} not found.`);
-    //         }
+async function deleteItem(id?: number): Promise<void> {
+    try {
 
-    //         const existingVCardUser = await VCardUser.findByPk(uuid);
-    //         if (!existingVCardUser) { 
-    //             throw new Error(`VCardUser with ID ${uuid} not found.`);
-    //         }
+        await BudgetItem.destroy({
+            where: { id: id },
+        });
 
-    //         await existingVCardUser.update({
-    //             modifiedBy: doer.netId,
-    //             prefix,
-    //             firstName,
-    //             lastName,
-    //             title,
-    //             organization,
-    //             deptAbbr,
-    //             workPhone,
-    //             mobilePhone,
-    //             fax,
-    //             email,
-    //             website,
-    //             addressLine1,
-    //             addressLine2,
-    //             ORCID,
-    //         });
+    } catch (error) {
+        console.error("Error during item deletion:", error);
+        throw new Error("Failed to delete item due to an unexpected error");
+    }
+}
 
-    //         await existingVCard.update({
-    //             vCard, 
-    //             bytes
-    //         });
+async function edit(
+    id?: number,
+    itemName?: string,
+    amount?: number,
+    category?: string,
+    date?: string,
+): Promise<any> {
+    try {
+        const existingItem = await BudgetItem.findByPk(id);
 
-    //         await existingVCardUser.save();
-    //         await existingVCard.save();
+        if (!existingItem) {
+            throw new Error('No item found with the provided id');
+        }
 
-    //         return [existingVCard, existingVCardUser] ;
-    //     } catch (error) {
-    //         console.error('Error modifying VCard:', error);
-    //         throw error;
-    //     }
-    // }
+        await existingItem.update({
+            itemName,
+            amount,
+            category,
+            date,
 
-    // async function unregister(doer: MeSummary, uuid?: string): Promise<void> {
-    //     try {
-    //         const vCards = await VCards.findOne({ where: { uuid } });
+        });
 
-    //         if (!vCards) {
-    //             throw new Error("VCards not found for the provided UUID");
-    //         }
+        await existingItem.save();
 
-    //         const vCardUser = await VCardUser.findOne({ where: { uuid } });
-
-    //         if (!vCardUser) {
-    //             throw new Error("VCardUser not found for the provided UUID");
-    //         }
-
-    //         await vCards.destroy();
-    //         await vCardUser.destroy();
-    //     } catch (error) {
-    //         console.error("Error during unregister:", error);
-    //         throw new Error("Failed to unregister due to an unexpected error");
-    //     }
-    // }
+        return [existingItem];
+    } catch (error) {
+        console.error('Error modifying item:', error);
+        throw error;
+    }
+}
 
 
-    export { search, searchPaginated, create}
-// export { assign, unregister, modify, search, searchPaginated }
-
-
-
-
-// export { search, searchPaginated }
+export { search, searchPaginated, create, deleteItem, edit }
 

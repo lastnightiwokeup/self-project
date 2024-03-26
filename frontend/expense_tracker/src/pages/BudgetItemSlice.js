@@ -28,6 +28,14 @@ export const search = createAsyncThunk("budgetItem/search", async (payload) => {
   };
 });
 
+// export const search = createAsyncThunk(
+//   "budgetItem/search",
+//   async (payload) => {
+//     const response = await budgetItemApi.search(payload);
+//     return response.data;
+//   }
+// );
+
 // export const getVCard = createAsyncThunk("vCards/getVCard", async (payload) => {
 //   try {
 //     const vCardRes = await vCardsApi.get(payload.uuid);
@@ -41,38 +49,37 @@ export const createBudgetItem = createAsyncThunk(
   "budgetItem/createBudgetItem",
   async (payload) => {
     try {
-      console.log(payload);
       const itemRes = await budgetItemApi.create(payload);
-      console.log(itemRes);
       return itemRes.data;
 
-      //   return { message: vCardRes.data.message };
+        // return { message: itemRes.data.message };
     } catch (error) {
       throw error;
     }
   }
 );
 
-// export const modifyVCard = createAsyncThunk(
-//   "vCards/modifyVCard",
-//   async (payload) => {
-//     try {
-//       const vCardRes = await vCardsApi.modify(payload);
-//       return { message: vCardRes.data.message };
-//     } catch (error) {
-//       throw error;
-//     }
-//   }
-// );
+export const editBudgetItem = createAsyncThunk(
+  "budgetItem/editBudgetItem",
+  async (payload) => {
+    try {
+      const itemRes = await budgetItemApi.edit(payload);
+      // return { message: vCardRes.data.message };
+    } catch (error) {
+      throw error;
+    }
+  }
+);
 
-// export const deleteVCardRecords = createAsyncThunk(
-//   "vcards/deleteVCardRecords",
-//   async (payload) => {
-//     const vCardRes = await vCardsApi.unregister({ uuid: payload.uuid });
+export const deleteItemRecord = createAsyncThunk(
+  "budgetItem/deleteItemRecord",
+  async (payload) => {
 
-//     return { message: vCardRes.data.message };
-//   }
-// );
+    const itemRes = await budgetItemApi.deleteItem(payload);
+
+    // return { message: itemRes.data.message };
+  }
+);
 
 export const BudgetItemSlice = createSlice({
   name: "budgetItem",
@@ -88,18 +95,18 @@ export const BudgetItemSlice = createSlice({
       .addCase(search.fulfilled, (state, action) => {
         state.budgetItemTable.isLoading = false;
         state.budgetItemTable.rows = action?.payload?.rows
-          // ?.sort((a, b) => {
-          //   return moment(a.createdAt).valueOf() > moment(b.createdAt).valueOf()
-          //     ? 1
-          //     : -1;
-          // })
-          // ?.map((row, index) => {
-          //   row.index = index + 1;
-          //   row.createdAt = moment(row.createdAt)
-          //     .tz("Asia/Hong_Kong")
-          //     .format("YYYY-MM-DD HH:mm:ss");
-          //   return row;
-          // });
+          ?.sort((a, b) => {
+            return moment(a.createdAt).valueOf() > moment(b.createdAt).valueOf()
+              ? -1
+              : 1;
+          })
+          ?.map((row, index) => {
+            row.index = index + 1;
+            row.createdAt = moment(row.createdAt)
+              .tz("Asia/Hong_Kong")
+              .format("YYYY-MM-DD HH:mm:ss");
+            return row;
+          });
         state.budgetItemTable.totalCount = action?.payload?.totalCount;
       })
       .addCase(search.rejected, (state, action) => {

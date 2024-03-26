@@ -1,5 +1,26 @@
 import axiosWrapper from "./wrapper";
 
+export function search({
+  id,
+  itemName,
+  amount,
+  date,
+  category,
+  pageSize,
+  pageNum,
+}) {
+  const response = axiosWrapper("post", "/api/budgetItem/search", {
+    id: id,
+    itemName: itemName,
+    amount: amount,
+    date: date,
+    category: category,
+    pageSize: pageSize,
+    pageNum: pageNum,
+  });
+  return response;
+}
+
 export function create({ itemName, amount, category, date }) {
   const response = axiosWrapper("post", "/api/budgetItem/create", {
     itemName: itemName,
@@ -10,17 +31,14 @@ export function create({ itemName, amount, category, date }) {
   return response;
 }
 
-export function search({
-  itemName,
-  amount,
-  date,
-  category
-}) {
-  const response = axiosWrapper("post", "/api/budgetItem/search", {
-    itemName: itemName,
-    amount: amount,
-    date: date,
-    category: category
+export function edit(payload) {
+  const response = axiosWrapper("post", "/api/budgetItem/edit", payload);
+  return response;
+}
+
+export function deleteItem({ id }) {
+  const response = axiosWrapper("post", "/api/budgetItem/deleteItem", {
+    id: id,
   });
   return response;
 }

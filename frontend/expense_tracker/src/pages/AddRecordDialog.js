@@ -32,8 +32,6 @@ export default function AddRecordDialog(props) {
     }
   );
 
-  console.log(formInput);
-
   const handleFormInput = (evt) => {
     const { name, value } = evt.target;
 

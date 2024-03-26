@@ -18,13 +18,12 @@ class BudgetItem extends Model<BudgetItemAttributes> implements BudgetItemAttrib
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
-
 }
 
 BudgetItem.init(
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,
         },
