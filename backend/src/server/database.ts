@@ -9,10 +9,10 @@ DATE.prototype._stringify = function (date: any, options: any) {
   };
   
 const sequelize = new Sequelize(
-    'budget_tracker', 'root', 'Lauren0627', {
+  'postgres', 'postgres.efvnknssaqlxdtprdifs', process.env.DB_PASSWORD, {
     logging: console.log,
-    host: 'localhost',
-    dialect: 'mysql'
+    host: process.env.DB_HOST,
+    dialect: 'postgres'
 });
 
 sequelize
