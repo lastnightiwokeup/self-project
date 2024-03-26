@@ -14,6 +14,7 @@ import {
 } from "./BudgetItemSlice";
 import Grid from "@mui/material/Grid";
 import DeleteDialog from "./DeleteDialog";
+import { CSVLink, CSVDownload } from "react-csv";
 
 export default function ExpenseTable(props) {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,11 +22,12 @@ export default function ExpenseTable(props) {
   const [recordToEdit, setRecordToEdit] = useState(null);
   const [recordToDelete, setRecordToDelete] = useState(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   // Slice for this page
   const sliceState = useSelector((state) => state.budgetItem);
   const [pageSize, setPageSize] = useState(50);
   const [pageNum, setPageNum] = useState(0);
-
+console.log(sliceState)
   // Search Form Input Values
   const [searchInput, dispatchSearchInput] = useReducer(
     (state, action) => ({ ...state, ...action.payload }),
@@ -71,7 +73,7 @@ export default function ExpenseTable(props) {
   }, []);
 
   const columnForDataGrid = [
-    { field: "index", headerName: "", width: 80},
+    { field: "index", headerName: "", width: 80 },
     {
       field: "itemName",
       headerName: "Item Name",
@@ -109,7 +111,7 @@ export default function ExpenseTable(props) {
               color="warning"
               onClick={() => {
                 setRecordToEdit(params.row);
-                setIsOpen(true);
+                setIsEditDialogOpen(true);
               }}
               sx={{ mr: "0.5rem" }}
             >
@@ -143,10 +145,10 @@ export default function ExpenseTable(props) {
       ></AddRecordDialog>
 
       <EditRecordDialog
-        isOpen={isOpen}
+        isOpen={isEditDialogOpen}
         recordToEdit={recordToEdit}
         onClose={() => {
-          setIsOpen(false);
+          setIsEditDialogOpen(false);
           setRecordToEdit(null);
           submitSearch();
         }}
@@ -182,9 +184,15 @@ export default function ExpenseTable(props) {
               </Button>
             </Grid>
             <Grid item sx={{ ml: 1 }}>
-              <Button variant="contained" color="success">
-                Export CSV
-              </Button>
+              <CSVLink
+                data={sliceState.budgetItemTable.rows}
+                filename={"my-file.csv"}
+                target="_blank"
+              >
+                <Button variant="contained" color="success">
+                  Export CSV
+                </Button>
+              </CSVLink>
             </Grid>
           </Grid>
 
