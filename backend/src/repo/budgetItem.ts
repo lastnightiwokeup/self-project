@@ -23,7 +23,7 @@ class BudgetItem extends Model<BudgetItemAttributes> implements BudgetItemAttrib
 BudgetItem.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
