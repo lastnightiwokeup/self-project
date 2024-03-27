@@ -10,6 +10,10 @@ CREATE TABLE BudgetItem (
     updatedAt datetime NOT NULL,
 );
 
+CREATE TABLE ItemCategory (
+    category VARCHAR(255) CHARACTER SET UTF8MB4 NOT NULL,
+)
+
 --PostgreSQL--
 
 CREATE TABLE BudgetItem (
@@ -21,3 +25,4 @@ CREATE TABLE BudgetItem (
     createdAt TIMESTAMP NOT NULL,
     updatedAt TIMESTAMP NOT NULL
 );
+
